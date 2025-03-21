@@ -1,0 +1,11 @@
+{
+  "name": "docker-vox-demucs",
+  "module": "src/build.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
