@@ -142,4 +142,31 @@ export class BuildImage {
         this.logger.info(result, 'Push Result');
         return result;
     }
+
+    /**
+     * Lints the Docker file
+     *
+     * @returns a promise of the lint output
+     * @throws Error if the lint has errors ( warnings are OK)
+     */
+    public async lint() {
+        this.logger.info('Linting Docker file');
+
+        // Execute Hadolint via Docker using the provided command
+        const result =
+            await $`docker run --rm -i --entrypoint=hadolint hadolint/hadolint --failure-threshold=error - < ./docker/Dockerfile`
+                .quiet()
+                .nothrow();
+
+        // Trim the output for a cleaner log message
+        const output = result.text().trim();
+
+        if (result.exitCode !== 0) {
+            this.logger.error(`Linting failed with exit code ${result.exitCode}:\n${output}`);
+            throw new Error(output);
+        }
+        this.logger.info(`Linting passed:\n${output}`);
+
+        return output;
+    }
 }
