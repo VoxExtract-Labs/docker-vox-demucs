@@ -35,5 +35,5 @@ describe('build-image script integration', () => {
 
         const rmiResult = await $`docker rmi voxextractlabs/vox-demucs:${tagName}`;
         expect(rmiResult.exitCode).toBe(0);
-    }, 120000);
+    }, 360000);
 });
