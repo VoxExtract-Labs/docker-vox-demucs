@@ -6,7 +6,7 @@
         "lint": "bun biome check",
         "lint:fix": "bun biome check --write",
         "prepare": "if [ \"$CI\" = \"true\" ]; then echo 'CI detected: skipping lefthook install'; else bunx lefthook install; fi",
-        "docker:build": "bun src/build.ts"
+        "docker:build": "./scripts/build-image"
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
@@ -21,6 +21,8 @@
         "typescript": "^5.0.0"
     },
     "dependencies": {
-        "@inquirer/prompts": "^7.4.0"
+        "@inquirer/prompts": "^7.4.0",
+        "pino": "^9.6.0",
+        "pino-pretty": "^13.0.0"
     }
 }
