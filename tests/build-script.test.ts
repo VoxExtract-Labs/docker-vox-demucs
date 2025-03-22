@@ -30,7 +30,7 @@ describe('build-image script integration', () => {
         const buildResult = await $`./scripts/build-image -t ${tagName} --no-push`;
         expect(buildResult.exitCode).toBe(0);
 
-        const runResult = await $`docker run -it --rm voxextractlabs/vox-demucs:${tagName} demucs /app/test.mp3`;
+        const runResult = await $`docker run --rm voxextractlabs/vox-demucs:${tagName} demucs /app/test.mp3`;
         expect(runResult.exitCode).toBe(0);
 
         const rmiResult = await $`docker rmi voxextractlabs/vox-demucs:${tagName}`;

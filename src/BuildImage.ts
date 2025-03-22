@@ -153,10 +153,13 @@ export class BuildImage {
         this.logger.info('Linting Docker file');
 
         // Execute Hadolint via Docker using the provided command
-        const result =
-            await $`docker run --rm -i --entrypoint=hadolint hadolint/hadolint --failure-threshold=error - < ./docker/Dockerfile`
-                .quiet()
-                .nothrow();
+        const result = await this.executor.exec(
+            'docker run --rm --entrypoint=hadolint hadolint/hadolint --failure-threshold=error - < ./docker/Dockerfile',
+            {
+                quiet: true,
+                shouldThrow: false,
+            },
+        );
 
         // Trim the output for a cleaner log message
         const output = result.text().trim();
