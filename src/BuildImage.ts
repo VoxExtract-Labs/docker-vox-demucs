@@ -13,7 +13,7 @@ export type ImageSummary = {
     os: string;
     author: string;
     size: string;
-    virtualSize: string;
+    virtualSize?: string;
     created: string;
 };
 
@@ -119,7 +119,7 @@ export class BuildImage {
             os: inspectData.Os,
             author: inspectData.Author,
             size: inspectData.Size.toString(),
-            virtualSize: inspectData.VirtualSize.toString(),
+            virtualSize: inspectData.VirtualSize ? inspectData.VirtualSize.toString() : '0',
             created: new Date(inspectData.Created).toLocaleString(),
         };
         this.logger.info(summary, 'Build Summary');
