@@ -98,12 +98,16 @@ export class BuildImage {
      */
     public async buildImage(): Promise<ImageSummary> {
         this.logger.info({ image: this.imageName, tag: this.tagName }, 'Building Docker image');
+        const noCacheArg = this.skipCache ? '--no-cache' : '';
 
-        const buildResult = await this.executor.exec(`docker build -t ${this.imageName}:${this.tagName} ./docker`, {
-            // Use quiet mode if silent is set.
-            quiet: this.isSilent,
-            shouldThrow: !this.isSilent,
-        });
+        const buildResult = await this.executor.exec(
+            `docker build ${noCacheArg} -t ${this.imageName}:${this.tagName} ./docker`,
+            {
+                // Use quiet mode if silent is set.
+                quiet: this.isSilent,
+                shouldThrow: !this.isSilent,
+            },
+        );
         if (buildResult.exitCode !== 0) {
             throw new Error(`Docker build failed: ${buildResult.stderr}`);
         }
