@@ -26,5 +26,9 @@ jobs:
       - name: Lint Dockerfile
         run: bun scripts/lint-docker-file
 
+      # Pre-pull a frequently-used base image to speed up docker build.
+      - name: Pre-pull base image
+        run: docker pull nvidia/cuda:12.4.1-base-ubuntu22.04
+
       - name: Run tests
         run: bun test

@@ -6,6 +6,7 @@ import { BuildImage } from "../src/BuildImage.ts";
 import { getCurrentBranchName } from "../src/git-utils.ts";
 import { BunShellExecutor } from "../src/ShellExecutor.ts";
 import * as process from "node:process";
+import {verifyDockerInstalled} from "../src/verifyDockerInstalled.ts";
 
 const { values, positionals } = parseArgs({
     args: Bun.argv,
@@ -44,6 +45,8 @@ const { verbose, quiet: silent, "no-cache": skipCache, push } = values;
 const noPush = values["no-push"];
 
 const tagName = values.tag ?? await getCurrentBranchName();
+
+await verifyDockerInstalled();
 
 const imageBuilder = new BuildImage({
     tagName,
