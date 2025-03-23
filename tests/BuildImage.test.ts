@@ -76,8 +76,8 @@ describe('BuildImage', () => {
         expect(summary.id).toBe('fake-id-123');
         expect(summary.os).toBe('linux');
         expect(summary.author).toBe('Test Author');
-        expect(summary.size).toBe('4200000000');
-        expect(summary.virtualSize).toBe('4300000000');
+        expect(summary.size).toBe('4.2 GB');
+        expect(summary.virtualSize).toBe('4.3 GB');
         expect(summary.created).not.toBe('');
     });
 
