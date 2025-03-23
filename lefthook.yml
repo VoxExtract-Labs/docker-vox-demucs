@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      run: bun biome check
+    format:
+      run: bun biome format
+
+commit-msg:
+  commands:
+    commitlint:
+      run: bunx commitlint --edit $1

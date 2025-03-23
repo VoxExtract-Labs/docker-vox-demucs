@@ -1,0 +1,84 @@
+#!/usr/bin/env bun
+
+import { parseArgs } from 'node:util';
+import { confirm } from '@inquirer/prompts';
+import { BuildImage } from "../src/BuildImage.ts";
+import { getCurrentBranchName } from "../src/git-utils.ts";
+import { BunShellExecutor } from "../src/ShellExecutor.ts";
+import * as process from "node:process";
+import {verifyDockerInstalled} from "../src/verifyDockerInstalled.ts";
+
+const { values, positionals } = parseArgs({
+    args: Bun.argv,
+    options: {
+        tag: {
+            type: 'string',
+            short: 't',
+        },
+        'no-cache': {
+            type: 'boolean',
+            default: false,
+        },
+        push: {
+            type: 'boolean',
+            short: 'p',
+        },
+        'no-push': { // define exactly as "--no-push"
+            type: "boolean"
+        },
+        verbose: {
+            type: 'boolean',
+            short: 'v',
+            default: false
+        },
+        quiet: {
+            type: 'boolean',
+            short: 'q',
+            default: false
+        }
+    },
+    strict: true,
+    allowPositionals: true,
+});
+
+const { verbose, quiet: silent, "no-cache": skipCache, push } = values;
+const noPush = values["no-push"];
+
+const tagName = values.tag ?? await getCurrentBranchName();
+
+await verifyDockerInstalled();
+
+const imageBuilder = new BuildImage({
+    tagName,
+    verbose,
+    silent,
+    skipCache
+}, new BunShellExecutor());
+
+try {
+    await imageBuilder.buildImage();
+} catch (e) {
+    console.error(`Image Builder failed to build image: ${(e as Error).message}`);
+    console.error(e)
+    process.exit(1);
+}
+
+let shouldPush: boolean;
+if (noPush) {
+    shouldPush = false;
+    console.log("Skipping push because --no-push flag was provided.");
+} else if (push === true) {
+    shouldPush = true;
+} else if (push === undefined && !values.quiet) {
+    shouldPush = await confirm({
+        message: `Would you like to push ${imageBuilder.imageName}:${imageBuilder.tagName} to Dockerhub?`,
+        default: false,
+    });
+} else {
+    shouldPush = false;
+}
+
+if (shouldPush) {
+    await imageBuilder.pushImage();
+}
+process.exit(0)

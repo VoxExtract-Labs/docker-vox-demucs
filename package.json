@@ -1,11 +1,28 @@
 {
-  "name": "docker-vox-demucs",
-  "module": "src/build.ts",
-  "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+    "name": "docker-vox-demucs",
+    "module": "src/build.ts",
+    "type": "module",
+    "scripts": {
+        "lint": "bun biome check",
+        "lint:fix": "bun biome check --write",
+        "prepare": "if [ \"$CI\" = \"true\" ]; then echo 'CI detected: skipping lefthook install'; else bunx lefthook install; fi",
+        "docker:build": "./scripts/build-image"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "@commitlint/cli": "^19.8.0",
+        "@commitlint/config-conventional": "^19.8.0",
+        "lefthook": "^1.11.3",
+        "pretty-bytes": "^6.1.1",
+        "voice-extractor-shared": "github:VoxExtract-Labs/voice-extractor-shared#main",
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@inquirer/prompts": "^7.4.0",
+        "pino": "^9.6.0",
+        "pino-pretty": "^13.0.0"
+    }
 }
