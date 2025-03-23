@@ -46,8 +46,8 @@ jobs:
           file: ./docker/Dockerfile
           push: false
           tags: voxextractlabs/vox-demucs:test-cache
-          cache-from: type=registry,ref=ghcr.io/VoxExtract-Labs/vox-demucs-cache:latest
-          cache-to: type=registry,ref=ghcr.io/VoxExtract-Labs/vox-demucs-cache:latest,mode=max,compress=true
+          cache-from: type=registry,ref=ghcr.io/vox-extract-labs/vox-demucs-cache:latest
+          cache-to: type=registry,ref=ghcr.io/vox-extract-labs/vox-demucs-cache:latest,mode=max,compress=true
 
       - name: Run tests
         run: bun test
