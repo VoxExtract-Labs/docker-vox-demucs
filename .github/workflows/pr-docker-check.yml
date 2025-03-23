@@ -26,7 +26,23 @@ jobs:
       - name: Lint Dockerfile
         run: bun scripts/lint-docker-file
 
-      # Pre-pull a frequently-used base image to speed up docker build.
+      # Set up Docker Buildx to enable advanced caching
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Use docker/build-push-action to build the image with cache import/export.
+      # Note: we don't push the image, so push is false.
+      - name: Build Docker image with caching
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/Dockerfile
+          push: false
+          tags: voxextractlabs/vox-demucs:test-cache
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Pre-pull a frequently-used base image to speed up build.
       - name: Pre-pull base image
         run: docker pull nvidia/cuda:12.4.1-base-ubuntu22.04
 
