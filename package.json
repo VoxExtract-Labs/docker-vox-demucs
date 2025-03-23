@@ -1,21 +1,27 @@
 {
     "name": "docker-vox-demucs",
+    "version": "1.0.0",
     "module": "src/build.ts",
     "type": "module",
+    "description": "A Docker image build for VoxExtract-Labs' Vox Demucs project.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/VoxExtract-Labs/docker-vox-demucs.git"
+    },
     "scripts": {
         "lint": "bun biome check",
         "lint:fix": "bun biome check --write",
         "prepare": "if [ \"$CI\" = \"true\" ]; then echo 'CI detected: skipping lefthook install'; else bunx lefthook install; fi",
-        "docker:build": "./scripts/build-image"
+        "docker:build": "./scripts/build-image",
+        "docker:lint": "./scripts/lint-docker-file"
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@commitlint/cli": "^19.8.0",
         "@commitlint/config-conventional": "^19.8.0",
+        "@types/bun": "latest",
         "lefthook": "^1.11.3",
-        "pretty-bytes": "^6.1.1",
-        "voice-extractor-shared": "github:VoxExtract-Labs/voice-extractor-shared#main",
-        "@types/bun": "latest"
+        "voice-extractor-shared": "github:VoxExtract-Labs/voice-extractor-shared#main"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
@@ -23,6 +29,7 @@
     "dependencies": {
         "@inquirer/prompts": "^7.4.0",
         "pino": "^9.6.0",
-        "pino-pretty": "^13.0.0"
+        "pino-pretty": "^13.0.0",
+        "pretty-bytes": "^6.1.1"
     }
 }

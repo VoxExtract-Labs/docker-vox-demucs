@@ -1,0 +1,30 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-type:
+        description: 'The release type (e.g. node, python, simple, etc.)'
+        required: true
+        default: 'node'
+      release-version:
+        description: 'Optional: override the computed version (e.g. 1.2.3)'
+        required: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Run release-please to create/update release PR
+        uses: googleapis/release-please-action@v3
+        with:
+          release-type: ${{ github.event.inputs.release-type }}
+          version: ${{ github.event.inputs.release-version }}

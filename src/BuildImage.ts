@@ -1,5 +1,5 @@
-import { $ } from 'bun';
 import type { Logger } from 'pino';
+import prettyBytes from 'pretty-bytes';
 import type { IShellExecutor } from './ShellExecutor.ts';
 import { buildLogger } from './build-logger.ts';
 
@@ -122,8 +122,8 @@ export class BuildImage {
             id: inspectData.Id,
             os: inspectData.Os,
             author: inspectData.Author,
-            size: inspectData.Size.toString(),
-            virtualSize: inspectData.VirtualSize ? inspectData.VirtualSize.toString() : '0',
+            size: prettyBytes(inspectData.Size),
+            virtualSize: inspectData.VirtualSize ? prettyBytes(inspectData.VirtualSize) : '-',
             created: new Date(inspectData.Created).toLocaleString(),
         };
         this.logger.info(summary, 'Build Summary');
