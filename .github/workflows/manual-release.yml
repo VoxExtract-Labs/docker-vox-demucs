@@ -28,3 +28,4 @@ jobs:
         with:
           release-type: ${{ github.event.inputs.release-type }}
           version: ${{ github.event.inputs.release-version }}
+          token: ${{ secrets.RELEASE_TOKEN }}
