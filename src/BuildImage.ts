@@ -136,9 +136,10 @@ export class BuildImage {
      * @returns A promise that resolves to the push command's output as a string.
      * @throws Error if the Docker push fails.
      */
-    public async pushImage(): Promise<string> {
+    public async pushImage(tagNameOverride?: string): Promise<string> {
         this.logger.info({ image: this.imageName, tag: this.tagName }, 'Pushing Docker image');
-        const pushResult = await this.executor.exec(`docker push ${this.imageName}:${this.tagName}`, { quiet: true });
+        const tagName = tagNameOverride ?? this.tagName;
+        const pushResult = await this.executor.exec(`docker push ${this.imageName}:${tagName}`, { quiet: true });
         if (pushResult.exitCode !== 0) {
             throw new Error(`Docker push failed: ${pushResult.stderr}`);
         }

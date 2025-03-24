@@ -52,7 +52,7 @@ class StubShellExecutor implements IShellExecutor {
             return Promise.resolve(createDummyShellOutput(JSON.stringify(fakeInspect)));
         }
         if (cmd.includes('docker push')) {
-            return Promise.resolve(createDummyShellOutput('Push successful'));
+            return Promise.resolve(createDummyShellOutput(`Push successful with: ${cmd}`));
         }
         return Promise.resolve(createDummyShellOutput(''));
     }
@@ -86,5 +86,15 @@ describe('BuildImage', () => {
         const builder = new BuildImage(options, stubExecutor);
         const output = await builder.pushImage();
         expect(output).toContain('Push successful');
+        expect(output).toEndWith(':test-tag');
+    });
+
+    it('allows tag name override', async () => {
+        const options = { tagName: 'Test-Tag', skipCache: false, silent: false, verbose: false };
+        const builder = new BuildImage(options, stubExecutor);
+        const output = await builder.pushImage('latest');
+        console.log({ output });
+        expect(output).toContain('Push successful');
+        expect(output).toEndWith(':latest');
     });
 });
