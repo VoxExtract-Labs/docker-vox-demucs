@@ -2,6 +2,11 @@ name: Build and Push Docker Image
 
 on:
   workflow_dispatch:
+    inputs:
+      dockerTag:
+        description: 'Custom Docker tag to use (overrides git tag). Leave empty to use the git tag without the "v" prefix.'
+        required: false
+        default: ''
   push:
     tags:
       - 'v*'
@@ -13,14 +18,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.1.18
-
-      # Set IMAGE_TAG by stripping the leading "v" from the tag name.
+      # Set IMAGE_TAG by using the manual input (if provided) or default to git tag minus "v"
       - name: Set image tag environment variable
-        run: echo "IMAGE_TAG=${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.dockerTag }}" ]]; then
+            echo "Using custom docker tag: ${{ github.event.inputs.dockerTag }}"
+            echo "IMAGE_TAG=${{ github.event.inputs.dockerTag }}" >> $GITHUB_ENV
+          else
+            # When triggered by a tag push, GITHUB_REF_NAME is something like "v1.2.3"
+            echo "Using git tag docker tag: ${GITHUB_REF_NAME:1}"
+            echo "IMAGE_TAG=${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
+          fi
         env:
           GITHUB_REF_NAME: ${{ github.ref_name }}
 

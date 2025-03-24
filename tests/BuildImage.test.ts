@@ -52,7 +52,7 @@ class StubShellExecutor implements IShellExecutor {
             return Promise.resolve(createDummyShellOutput(JSON.stringify(fakeInspect)));
         }
         if (cmd.includes('docker push')) {
-            return Promise.resolve(createDummyShellOutput('Push successful'));
+            return Promise.resolve(createDummyShellOutput(`Push successful with: ${cmd}`));
         }
         return Promise.resolve(createDummyShellOutput(''));
     }
@@ -62,9 +62,9 @@ describe('BuildImage', () => {
     const stubExecutor = new StubShellExecutor();
 
     it('normalizes tag name', () => {
-        const options = { tagName: 'Feature/My New Branch', skipCache: false, silent: false, verbose: false };
+        const options = { tagName: 'Feature/My New Branch v1.0', skipCache: false, silent: false, verbose: false };
         const builder = new BuildImage(options, stubExecutor);
-        expect(builder.tagName).toBe('feature-my-new-branch');
+        expect(builder.tagName).toBe('feature-my-new-branch-v1.0');
     });
 
     it('builds an image and returns an ImageSummary', async () => {
@@ -86,5 +86,14 @@ describe('BuildImage', () => {
         const builder = new BuildImage(options, stubExecutor);
         const output = await builder.pushImage();
         expect(output).toContain('Push successful');
+        expect(output).toEndWith(':test-tag');
+    });
+
+    it('allows tag name override', async () => {
+        const options = { tagName: 'Test-Tag', skipCache: false, silent: false, verbose: false };
+        const builder = new BuildImage(options, stubExecutor);
+        const output = await builder.pushImage('latest');
+        expect(output).toContain('Push successful');
+        expect(output).toEndWith(':latest');
     });
 });

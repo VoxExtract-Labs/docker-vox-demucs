@@ -1,14 +1,14 @@
 #!/usr/bin/env bun
 
-import { parseArgs } from 'node:util';
-import { confirm } from '@inquirer/prompts';
-import { BuildImage } from "../src/BuildImage.ts";
-import { getCurrentBranchName } from "../src/git-utils.ts";
-import { BunShellExecutor } from "../src/ShellExecutor.ts";
+import {parseArgs} from 'node:util';
+import {confirm} from '@inquirer/prompts';
+import {BuildImage} from "../src/BuildImage.ts";
+import {getCurrentBranchName} from "../src/git-utils.ts";
+import {BunShellExecutor} from "../src/ShellExecutor.ts";
 import * as process from "node:process";
 import {verifyDockerInstalled} from "../src/verifyDockerInstalled.ts";
 
-const { values, positionals } = parseArgs({
+const {values, positionals} = parseArgs({
     args: Bun.argv,
     options: {
         tag: {
@@ -35,13 +35,17 @@ const { values, positionals } = parseArgs({
             type: 'boolean',
             short: 'q',
             default: false
+        },
+        latest: {
+            type: "boolean",
+            default: false
         }
     },
     strict: true,
     allowPositionals: true,
 });
 
-const { verbose, quiet: silent, "no-cache": skipCache, push } = values;
+const {verbose, quiet: silent, "no-cache": skipCache, push, latest} = values;
 const noPush = values["no-push"];
 
 const tagName = values.tag ?? await getCurrentBranchName();
@@ -79,6 +83,23 @@ if (noPush) {
 }
 
 if (shouldPush) {
-    await imageBuilder.pushImage();
+    try {
+        await imageBuilder.pushImage();
+    } catch (e) {
+        console.error(`Image Builder failed to push image: ${(e as Error).message}`);
+        console.error(e)
+        process.exit(1);
+    }
 }
+
+if (shouldPush && latest) {
+    try {
+        await imageBuilder.pushLatest();
+    } catch (e) {
+        console.error(`Image Builder failed to push latest image: ${(e as Error).message}`);
+        console.error(e)
+        process.exit(1);
+    }
+}
+
 process.exit(0)
