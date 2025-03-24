@@ -38,4 +38,3 @@ jobs:
           push: true
           tags: voxextractlabs/vox-demucs:${{ env.IMAGE_TAG }}
           cache-from: type=registry,ref=ghcr.io/voxextract-labs/vox-demucs-cache:latest
-          cache-to: type=registry,ref=ghcr.io/voxextract-labs/vox-demucs-cache:latest,mode=max
