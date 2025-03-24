@@ -17,19 +17,6 @@ jobs:
         with:
           bun-version: 1.1.18
 
-      - name: Install Bun dependencies
-        run: bun install
-
-      - name: Lint project files
-        run: bun run lint
-
-      - name: Lint Dockerfile
-        run: bun scripts/lint-docker-file
-
-      # Pre-pull the base image for speed
-      - name: Pre-pull base image
-        run: docker pull nvidia/cuda:12.4.1-base-ubuntu22.04
-
       # Set IMAGE_TAG by stripping the leading "v" from the tag name.
       - name: Set image tag environment variable
         run: echo "IMAGE_TAG=${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
@@ -43,6 +30,11 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
-        run: |
-          echo "Building Docker image with tag: $IMAGE_TAG"
-          bun run build-image --tag "$IMAGE_TAG" --push --quiet
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/Dockerfile
+          push: true
+          tags: voxextractlabs/vox-demucs:${{ env.IMAGE_TAG }}
+          cache-from: type=registry,ref=ghcr.io/voxextract-labs/vox-demucs-cache:latest
+          cache-to: type=registry,ref=ghcr.io/voxextract-labs/vox-demucs-cache:latest,mode=max
