@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/VoxExtract-Labs/docker-vox-demucs/compare/v1.0.0...v1.0.1) (2025-03-24)
+
+
+### Bug Fixes
+
+* fixed CI error repository name (VoxExtract-Labs/vox-demucs-cache) must be lowercase ([4ce768b](https://github.com/VoxExtract-Labs/docker-vox-demucs/commit/4ce768bd479e4e8f1c480335168e3dd3073bc78b))
+
 ## 1.0.0 (2025-03-23)
 
 

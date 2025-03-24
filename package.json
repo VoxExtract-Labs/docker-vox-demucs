@@ -1,6 +1,6 @@
 {
     "name": "docker-vox-demucs",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "module": "src/build.ts",
     "type": "module",
     "description": "A Docker image build for VoxExtract-Labs' Vox Demucs project.",
